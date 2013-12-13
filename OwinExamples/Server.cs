@@ -11,7 +11,7 @@ namespace OwinExamples
             // Each middleware explcitly requires AppFuncs if it is going to branch
             // The entire pipeline is run on each request, following appropriate branches
             return AppFuncs.Pipeline(
-                AppFuncs.Auth(new RouteUserValidator(),
+                AppFuncs.Auth(RouteUserValidator.Validator,
                     AppFuncs.View("Hello World")
                 ),
                 AppFuncs.LogResponseCode
@@ -26,7 +26,7 @@ namespace OwinExamples
             // Any "finally" type middleware is declared first so it wraps the rest of the pipeline
             return MiddlewareFuncs.Pipeline(
                 MiddlewareFuncs.LogResponseCode,
-                MiddlewareFuncs.Auth(new RouteUserValidator()),
+                MiddlewareFuncs.Auth(RouteUserValidator.Validator),
                 MiddlewareFuncs.View("Hello World")
             );
         }

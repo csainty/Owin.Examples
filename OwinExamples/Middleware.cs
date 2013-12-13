@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,11 @@ namespace OwinExamples
             };
         }
 
-        public static AppFunc Auth(IUserValidator userValidator, AppFunc onAuthenticated)
+        public static AppFunc Auth(Func<Environment, Task<bool>> userValidator, AppFunc onAuthenticated)
         {
             return async env =>
             {
-                if (await userValidator.IsLoggedIn(env))
+                if (await userValidator(env))
                 {
                     await onAuthenticated(env);
                     return;
@@ -66,11 +67,11 @@ namespace OwinExamples
             return next;
         }
 
-        public static MiddlewareFunc Auth(IUserValidator validator)
+        public static MiddlewareFunc Auth(Func<Environment, Task<bool>> userValidator)
         {
             return async (env, next) =>
             {
-                if (await validator.IsLoggedIn(env))
+                if (await userValidator(env))
                 {
                     await next(env);
                     return;
